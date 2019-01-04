@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour {
     private Vector3 moveDirection;
     public float jumpForce;
     public float gravityScale;
+    public float jumpDrag;
 
     //world characteristics
 
@@ -46,7 +47,8 @@ public class PlayerController : MonoBehaviour {
         playerInput = Vector3.ClampMagnitude(playerInput, 1);
 
 
-        moveDirection = new Vector3(horizontalMove * playerSpeed, moveDirection.y, verticalMove * playerSpeed);
+        //        moveDirection = new Vector3(horizontalMove * playerSpeed, moveDirection.y, verticalMove * playerSpeed);
+        moveDirection = new Vector3(0f, moveDirection.y, 0f);
 
 
 
@@ -70,13 +72,14 @@ public class PlayerController : MonoBehaviour {
 
         camDirection();
         movePlayer = playerInput.x * camRight + playerInput.z * camForward;
-
+        player.transform.LookAt(player.transform.position + movePlayer);
 
         moveDirection.y = moveDirection.y + (Physics.gravity.y * gravityScale);
-        player.Move(moveDirection * Time.deltaTime);
-//        player.transform.LookAt(player.transform.position + moveDirection);        
+        player.Move(movePlayer *playerSpeed* Time.deltaTime);
+        player.Move(moveDirection * jumpDrag * Time.deltaTime);
+        //        player.transform.LookAt(player.transform.position + moveDirection);        
         //        player.Move(movePlayer * playerSpeed * Time.deltaTime);
-        player.transform.LookAt(player.transform.position + movePlayer);
+
 
         //Debug.Log(player.velocity.magnitude);
 

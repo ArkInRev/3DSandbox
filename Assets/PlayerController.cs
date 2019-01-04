@@ -20,7 +20,9 @@ public class PlayerController : MonoBehaviour {
     public float jumpForce;
     public float gravityScale;
     public float jumpDrag;
-
+    private float sprintModifier;
+    public float walkModifier;
+    public float runModifier;
     //world characteristics
 
 
@@ -68,6 +70,14 @@ public class PlayerController : MonoBehaviour {
                 moveDirection.y = jumpForce;
             }
 
+            if (Input.GetAxis("Sprint")!=0)
+            {
+                //playerInput.y = jumpForce;
+                sprintModifier = runModifier;
+            } else
+            {
+                sprintModifier = walkModifier;
+            }
         }
 
         camDirection();
@@ -75,7 +85,7 @@ public class PlayerController : MonoBehaviour {
         player.transform.LookAt(player.transform.position + movePlayer);
 
         moveDirection.y = moveDirection.y + (Physics.gravity.y * gravityScale);
-        player.Move(movePlayer *playerSpeed* Time.deltaTime);
+        player.Move(movePlayer *(playerSpeed * sprintModifier)* Time.deltaTime);
         player.Move(moveDirection * jumpDrag * Time.deltaTime);
         //        player.transform.LookAt(player.transform.position + moveDirection);        
         //        player.Move(movePlayer * playerSpeed * Time.deltaTime);

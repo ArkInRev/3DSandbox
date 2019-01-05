@@ -210,7 +210,24 @@ public class PlayerController : MonoBehaviour {
 
 
         //Debug.Log(player.velocity.magnitude);
-
+        //interacting with the environment
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            //Debug.Log("pressed LMB");
+            //if the ray hits
+            if (Physics.Raycast(ray, out hit, 100))
+            {
+                //Debug.Log("raycast hit something");
+                Interactable interactable = hit.collider.GetComponent<Interactable>();
+                if (interactable!= null)
+                {
+                    //Debug.Log("You just hit an interactable: " + interactable.name);
+                    interactable.Interact(this);
+                }
+            }
+        }
 
     }
 

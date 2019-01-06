@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ThirdPersonCamera : MonoBehaviour {
 
@@ -43,5 +44,10 @@ public class ThirdPersonCamera : MonoBehaviour {
         transform.eulerAngles = currentRotation;
 
         transform.position = target.position - transform.forward * dstFromTarget;
+    }
+
+    public void SetMouseLookSensitivity(float newSensitivity)
+    {
+        mouseSensitivity = newSensitivity;
     }
 }

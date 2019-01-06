@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour {
 
@@ -73,17 +74,10 @@ public class PlayerController : MonoBehaviour {
 
 
         //        moveDirection = new Vector3(horizontalMove * playerSpeed, moveDirection.y, verticalMove * playerSpeed);
-        moveDirection = new Vector3(0f, moveDirection.y, 0f);
 
 
-        if (Input.GetAxisRaw("Jump") == 0)
-        {
-            // the jump button is not being held or pressed, reset isJumpInUse to false
-            // also ensure that the current jump force isn't incrementing
-            isJumpInUse = false;
-            isJumpStarted = false;
-            currentJumpForce = 0;
-        }
+
+
 
         if (Input.GetAxisRaw("Vertical")>0)
         {
@@ -93,6 +87,57 @@ public class PlayerController : MonoBehaviour {
             //player.transform.LookAt(player.transform.position + movePlayer);
         }
         
+
+
+
+        // Move in the update method movement. Trying to move to fixed update to normalize the move. 
+        //player.Move(movePlayer *(playerSpeed * sprintModifier)* Time.deltaTime);
+        //player.Move(moveDirection * jumpDrag * Time.deltaTime);
+     
+        
+        
+        //        player.transform.LookAt(player.transform.position + moveDirection);        
+        //        player.Move(movePlayer * playerSpeed * Time.deltaTime);
+
+
+        //Debug.Log(player.velocity.magnitude);
+        //interacting with the environment
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            //Debug.Log("pressed LMB");
+            //if the ray hits
+            if (Physics.Raycast(ray, out hit, 100 ))
+            {
+                //Debug.Log("raycast hit something");
+                Interactable interactable = hit.collider.GetComponent<Interactable>();
+                if (interactable!= null)
+                {
+                    //Debug.Log("You just hit an interactable: " + interactable.name);
+                    interactable.Interact(this);
+                }
+            }
+        }
+
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
+        }
+
+    }
+
+    private void FixedUpdate()
+    {
+        moveDirection = new Vector3(0f, moveDirection.y, 0f);
+        if (Input.GetAxisRaw("Jump") == 0)
+        {
+            // the jump button is not being held or pressed, reset isJumpInUse to false
+            // also ensure that the current jump force isn't incrementing
+            isJumpInUse = false;
+            isJumpStarted = false;
+            currentJumpForce = 0;
+        }
         if (player.isGrounded)
         {
             isJumpStarted = false;
@@ -114,21 +159,24 @@ public class PlayerController : MonoBehaviour {
                 //need to increment the jump force until max while the button is held and the jump is started until 
             }
 
-            if ((Input.GetAxis("Sprint")!=0)&&canSprint)
+            if ((Input.GetAxis("Sprint") != 0) && canSprint)
             {
                 //playerInput.y = jumpForce;
                 sprintModifier = runModifier;
-            } else
+            }
+            else
             {
                 sprintModifier = walkModifier;
             }
-        } else //player is not grounded
+        }
+        else //player is not grounded
         {
             timeUntilNextFlap -= Time.deltaTime;
-            if (moveDirection.y < (Physics.gravity.y -.5)) //if the y movement is .5 (offset) faster than gravity, then the player must be falling when not grounded.
+            if (moveDirection.y < (Physics.gravity.y - .5)) //if the y movement is .5 (offset) faster than gravity, then the player must be falling when not grounded.
             {
                 isFalling = true;
-            } else
+            }
+            else
             {
                 isFalling = false;
             }
@@ -143,21 +191,23 @@ public class PlayerController : MonoBehaviour {
                     //isJumpInUse = true;
 
 
-                } else
+                }
+                else
                 {
                     //currentGravityScale = gravityScale;
                     isGliding = false;
                 }
-            } else
+            }
+            else
             {
                 //currentGravityScale = gravityScale;
                 isGliding = false;
             }
             if (hasWings)
             {
-                if((timeUntilNextFlap<=0)&&(Input.GetAxis("Jump") != 0)&&(!isJumpInUse))
+                if ((timeUntilNextFlap <= 0) && (Input.GetAxis("Jump") != 0) && (!isJumpInUse))
                 {
-                    
+
                     isJumpInUse = true;
                     isFalling = false;
                     // wing flaps are bursts (different than jumps) so they are sudden full force upward pushes. 
@@ -165,11 +215,11 @@ public class PlayerController : MonoBehaviour {
                     timeUntilNextFlap = wingFlapFrequency;
                 }
             }
-            if ((airJumpsLeft > 0)&&(!isJumpInUse)&& (Input.GetAxis("Jump") != 0))
+            if ((airJumpsLeft > 0) && (!isJumpInUse) && (Input.GetAxis("Jump") != 0))
             {
                 // if you don't use the "hold button for more power jumps" then the line below jumps the player. 
                 //////////// FIX BELOW IF NOT CONTROLLED JUMP BUTTON PRESSES
-//                moveDirection.y = jumpForce;
+                //                moveDirection.y = jumpForce;
                 isJumpInUse = true;
                 airJumpsLeft -= 1;
                 isFalling = false;
@@ -180,21 +230,21 @@ public class PlayerController : MonoBehaviour {
         // handle the jump/button press amounts. 
         if (isJumpStarted)
         {
-            if((currentJumpForce<jumpForce)&&(isJumpInUse))
+            if ((currentJumpForce < jumpForce) && (isJumpInUse))
             {
                 currentJumpForce = (jumpForce);
             }
             moveDirection.y = currentJumpForce;
             isJumpStarted = false;
         }
-        
+
 
         camDirection();
         movePlayer = playerInput.x * camRight + playerInput.z * camForward;
         player.transform.LookAt(player.transform.position + movePlayer);
 
         //handle the movedirection.y based on the player state. When gliding, this is a steady downward pull, otherwise, gravity accellerates. 
-        if (isGliding&&isFalling)
+        if (isGliding && isFalling)
         {
             moveDirection.y = gravityScale * Physics.gravity.y * glidingDescent;
         }
@@ -203,37 +253,10 @@ public class PlayerController : MonoBehaviour {
             moveDirection.y = moveDirection.y + (Physics.gravity.y * currentGravityScale);
         }
 
-        player.Move(movePlayer *(playerSpeed * sprintModifier)* Time.deltaTime);
+        player.Move(movePlayer * (playerSpeed * sprintModifier) * Time.deltaTime);
         player.Move(moveDirection * jumpDrag * Time.deltaTime);
-        //        player.transform.LookAt(player.transform.position + moveDirection);        
-        //        player.Move(movePlayer * playerSpeed * Time.deltaTime);
 
 
-        //Debug.Log(player.velocity.magnitude);
-        //interacting with the environment
-        if (Input.GetMouseButtonDown(0))
-        {
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            //Debug.Log("pressed LMB");
-            //if the ray hits
-            if (Physics.Raycast(ray, out hit, 100))
-            {
-                //Debug.Log("raycast hit something");
-                Interactable interactable = hit.collider.GetComponent<Interactable>();
-                if (interactable!= null)
-                {
-                    //Debug.Log("You just hit an interactable: " + interactable.name);
-                    interactable.Interact(this);
-                }
-            }
-        }
-
-    }
-
-    private void FixedUpdate()
-    {
-        
     }
 
     void camDirection()

@@ -8,6 +8,8 @@ public class Interactable : MonoBehaviour
     public Transform interactionTransform;
     public bool isInRange;
     public string interactableName;
+    public AudioClip pickupSound;
+    public AudioSource interactableAudioSource;
 
 
     public virtual void Interact(PlayerController player)
@@ -23,6 +25,7 @@ public class Interactable : MonoBehaviour
         } else
         {
             isInRange = true;
+            interactableAudioSource.Play();
         }
 
 
@@ -33,6 +36,8 @@ public class Interactable : MonoBehaviour
     void Start()
     {
         interactionTransform = this.transform;
+        interactableAudioSource = this.GetComponent<AudioSource>();
+        interactableAudioSource.clip = pickupSound;
     }
 
 

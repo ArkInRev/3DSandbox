@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1912199127339922512}
   - component: {fileID: 1912199127339922513}
   - component: {fileID: 1912199127339922518}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -101,7 +101,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1912199128071406395}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: LookTarget
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 1912199128272814938}
   - component: {fileID: 1912199128272814939}
   - component: {fileID: 1912199128272814936}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -226,7 +226,7 @@ GameObject:
   - component: {fileID: 1912199128649686438}
   - component: {fileID: 1002097056}
   - component: {fileID: 1002097057}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -283,12 +283,20 @@ MonoBehaviour:
   horizontalMove: 0
   verticalMove: 0
   player: {fileID: 1912199128649686433}
+  canSprint: 0
+  canGlide: 0
+  hasWings: 0
+  airJumps: 0
   playerSpeed: 10
   jumpForce: 240
   gravityScale: 1
   jumpDrag: 0.05
   walkModifier: 1
   runModifier: 1.5
+  glidingDescent: 3
+  wingFlapFrequency: 0.5
+  jumpFrequency: 0
+  wingPower: 360
   mainCamera: {fileID: 0}
 --- !u!33 &1002097056
 MeshFilter:

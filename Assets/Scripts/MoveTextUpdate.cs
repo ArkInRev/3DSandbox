@@ -7,6 +7,7 @@ public class MoveTextUpdate : MonoBehaviour
     public bool showJump;
     public bool showGlide;
     public bool showWings;
+    public bool showMouse;
     public Text thistext;
 
     // Start is called before the first frame update
@@ -47,6 +48,11 @@ public class MoveTextUpdate : MonoBehaviour
             {
                 thistext.text = "Wings: " + player.hasWings.ToString();
             }
+        }
+
+        if (showMouse)
+        {
+            thistext.text = "Look Sensitivity: "+Camera.main.GetComponent<ThirdPersonCamera>().mouseSensitivity.ToString();
         }
 
     }

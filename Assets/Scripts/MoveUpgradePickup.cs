@@ -2,6 +2,8 @@
 
 public class MoveUpgradePickup : Interactable
 {
+    public ParticleSystem pickupParticles;
+
     public bool adjustGround;
     public bool adjustJump;
     public bool adjustGlide;
@@ -29,6 +31,7 @@ public class MoveUpgradePickup : Interactable
         base.Interact(player);
         if(base.isInRange)
         {
+            Instantiate(pickupParticles, transform);
             if (adjustGround)
             {
                 player.GetComponent<PlayerController>().playerSpeed = playerSpeed;
